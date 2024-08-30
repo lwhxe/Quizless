@@ -180,17 +180,15 @@ int question_loop(const vector<string>& elements, const vector<string>& signs, i
 // Main Quiz functionality, calls upon question_loop inside a loop.
 int question_game_symbols(vector<string> elements, vector<string> signs) {
 	vector<int> shufflist = shuffle(30);
-	int question;
 	int points = 0;
-	int point;
+	int current_point;
 
 	cout << endl;
 
 	for (int i = 0; i < 30; i++) {
-		question = shufflist[i];
-		point = question_loop(elements, signs, question, i + 1);
-		if (point != -1) {
-			points += point;
+		current_point = question_loop(elements, signs, shufflist[i], i + 1);
+		if (current_point != -1) {
+			points += current_point;
 		}
 		else {
 			return 1;
@@ -206,7 +204,7 @@ int question_game_symbols(vector<string> elements, vector<string> signs) {
 
 int main() {
 	system("chcp 65001"); // To support Unicode characters
-	system("@echo off");
+	// system("@echo off"); // I can't remember why, my uncle just said so...
 	vector<string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
 	vector<string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
 
@@ -248,6 +246,7 @@ int main() {
 					_getch();
 					break;
 				case 2:
+					color(7);
 					return 0;
 			}
 		}
