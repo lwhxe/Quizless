@@ -4,7 +4,7 @@
 
 Quizless is a Command Line tool to train yourself on the first 30 elements of the periodic table.
 
-The tool is written in C++ using Visual Studio 2022, all menus, prompts and text visible to the user is in Swedish.
+The tool is written in C/C++ using Visual Studio 2022, all menus, prompts and text visible to the user is in Swedish.
 
 The tool has been tested and has proven to be useful, it might eventually become a tool where other quiz activities can be scripted by the user.
 
