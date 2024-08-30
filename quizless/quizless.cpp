@@ -46,18 +46,16 @@ string convert_swedish_to_lower(const string& input) {
 	return result;
 }
 
-/* Function to remove carriage returns from string
-
-string remove_cr string str) {
-	str.erase(remove(str.begin(), str.end(), '\r'), str.end());
-	return str;
-}*/
-
 // Copies the valid Swedish letters of a string into another string and returns it. Used for filtering input.
-string keep_swedish_letters(const string& input) {
+string filter(const string& input) {
+	string sz_input = convert_swedish_to_lower(input);
+
+	for (auto& x : sz_input) {
+		x = tolower(x);
+	}
 	const string swedish_letters = "abcdefghijklmnopqrstuvwxyz\xC3\xA5\xC3\xA4\xC3\xB6";
 	string result;
-	copy_if(input.begin(), input.end(), back_inserter(result),
+	copy_if(sz_input.begin(), sz_input.end(), back_inserter(result),
 		[&swedish_letters](char c) { return swedish_letters.find(c) != string::npos; });
 	return result;
 }
@@ -110,7 +108,7 @@ vector<int> shuffle(int end) {
 	iota(v.begin(), v.end(), 1);  // Fill vector with values from 1 to end
 	ranges::shuffle(v, rd);       // Shuffle using C++20 ranges
 	for (int i = 0; i < end; i++) {
-		v[i] = v[i] - 1;  // Adjust values from 1-based to 0-based
+		v[i]--;
 	}
 	return v;
 }
@@ -118,7 +116,7 @@ vector<int> shuffle(int end) {
 // Question and Input handling here.
 int question_loop(const vector<string>& elements, const vector<string>& signs, int i, int n) {
 	string query;
-	int threshold = 23;
+	int threshold = 23; // Just in case someone figures out a way to buffer overflow, might not destroy the program completely... Probably still will tho.
 	int pointsback = 0;
 
 	cout.flush();
@@ -139,13 +137,8 @@ int question_loop(const vector<string>& elements, const vector<string>& signs, i
 		break;  // Exit the loop if non-empty input is provided
 	}
 
-	query = convert_swedish_to_lower(query);
+	query = filter(query);
 
-	for (auto& x : query) {
-		x = tolower(x);
-	}
-
-	query = keep_swedish_letters(query);
 	int distance = levenshtein_distance(query, elements[i]);
 	if (distance >= 13) {
 		cout << "Tar du inte detta seri\xC3\xB6st?" << endl;
@@ -170,6 +163,8 @@ int question_loop(const vector<string>& elements, const vector<string>& signs, i
 		break;
 	}
 	cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta..." << endl;
+
+	// This is for a bug that would make the user able to submit the next query without seeing the prompt.
 	cin.clear();
 	cin.ignore(10000, '\n');
 	cout << "\033[H\033[J" << endl;
@@ -243,7 +238,7 @@ int main() {
 						cout << elements[i] << " : " << signs[i] << endl;
 					}
 					cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta...";
-					_getch();
+					cin.get();
 					break;
 				case 2:
 					color(7);
