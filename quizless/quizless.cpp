@@ -207,7 +207,6 @@ int question_game_symbols(vector<string> elements, vector<string> signs) {
 int main() {
 	system("chcp 65001"); // To support Unicode characters
 	system("@echo off");
-	vector<string> filenames = { "elements.txt", "signs.txt" };
 	vector<string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
 	vector<string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
 
