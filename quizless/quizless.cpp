@@ -9,10 +9,12 @@
 #include <ranges>
 #include <conio.h>
 
+// Changes the color of the text or text background. Effectively \u001b[(x)m Replace x with appropriate color code in ANSI.
 void color(int color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
+// Moves the cursor
 void gotoxy(int x, int y) {
 	COORD c;
 	c.X = x;
@@ -20,6 +22,7 @@ void gotoxy(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
 
+// Converts all valid UPPERCASE Unicode characters into lowercase.
 std::string swedish_char_to_lower(const std::string& c) {
 	if (c == "\xC3\x85") return "\xC3\xA5";  // Å to å
 	if (c == "\xC3\x84") return "\xC3\xA4";  // Ä to ä
@@ -27,12 +30,13 @@ std::string swedish_char_to_lower(const std::string& c) {
 	return c;  // Return unchanged if not uppercase Å, Ä, or Ö
 }
 
+// Converts all letters into lowercase.
 std::string convert_swedish_to_lower(const std::string& input) {
 	std::string result;
 	for (size_t i = 0; i < input.length(); ++i) {
 		if (i + 1 < input.length() && (unsigned char)input[i] == 0xC3) {
 			result += swedish_char_to_lower(input.substr(i, 2));
-			++i;  // Skip the next byte as we've already processed it
+			++i;
 		}
 		else {
 			result += input[i];
@@ -48,6 +52,7 @@ std::string remove_cr(std::string str) {
 	return str;
 }*/
 
+// Copies the valid Swedish letters of a string into another string and returns it. Used for filtering input.
 std::string keep_swedish_letters(const std::string& input) {
 	const std::string swedish_letters = "abcdefghijklmnopqrstuvwxyz\xC3\xA5\xC3\xA4\xC3\xB6";
 	std::string result;
@@ -56,6 +61,7 @@ std::string keep_swedish_letters(const std::string& input) {
 	return result;
 }
 
+// Measures edit distance between 2 strings
 int levenshtein_distance(const std::string& s1, const std::string& s2) {
 	int len_s1 = s1.size();
 	int len_s2 = s2.size();
@@ -96,6 +102,7 @@ int levenshtein_distance(const std::string& s1, const std::string& s2) {
 	return dp[len_s1][len_s2];
 }
 
+// Shuffling for random questions
 std::vector<int> shuffle(int end) {
 	std::vector<int> v(end);
 	std::random_device rd;
@@ -107,6 +114,7 @@ std::vector<int> shuffle(int end) {
 	return v;
 }
 
+// Question and Input handling here.
 int question_loop(const std::vector<std::string>& elements, const std::vector<std::string>& signs, int i, int n) {
 	std::string query;
 	int threshold = 23;
@@ -168,6 +176,7 @@ int question_loop(const std::vector<std::string>& elements, const std::vector<st
 	return pointsback;
 }
 
+// Main Quiz functionality, calls upon question_loop inside a loop.
 int question_game_symbols(std::vector<std::string> elements, std::vector<std::string> signs) {
 	std::vector<int> shufflist = shuffle(30);
 	int question;
@@ -195,12 +204,13 @@ int question_game_symbols(std::vector<std::string> elements, std::vector<std::st
 }
 
 int main() {
-	system("chcp 65001");
+	system("chcp 65001"); // To support Unicode characters
 	system("@echo off");
 	std::vector<std::string> filenames = { "elements.txt", "signs.txt" };
 	std::vector<std::string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
 	std::vector<std::string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
 
+	// Main Menu
 	int colors[] = { 7, 7, 7 };
 	int selected = 0;
 	int key;
