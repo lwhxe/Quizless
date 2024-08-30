@@ -9,6 +9,7 @@
 #include <ranges>
 #include <conio.h>
 
+using namespace std;
 // Changes the color of the text or text background. Effectively \u001b[(x)m Replace x with appropriate color code in ANSI.
 void color(int color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
@@ -23,7 +24,7 @@ void gotoxy(int x, int y) {
 }
 
 // Converts all valid UPPERCASE Unicode characters into lowercase.
-std::string swedish_char_to_lower(const std::string& c) {
+string swedish_char_to_lower(const string& c) {
 	if (c == "\xC3\x85") return "\xC3\xA5";  // Å to å
 	if (c == "\xC3\x84") return "\xC3\xA4";  // Ä to ä
 	if (c == "\xC3\x96") return "\xC3\xB6";  // Ö to ö
@@ -31,8 +32,8 @@ std::string swedish_char_to_lower(const std::string& c) {
 }
 
 // Converts all letters into lowercase.
-std::string convert_swedish_to_lower(const std::string& input) {
-	std::string result;
+string convert_swedish_to_lower(const string& input) {
+	string result;
 	for (size_t i = 0; i < input.length(); ++i) {
 		if (i + 1 < input.length() && (unsigned char)input[i] == 0xC3) {
 			result += swedish_char_to_lower(input.substr(i, 2));
@@ -47,27 +48,27 @@ std::string convert_swedish_to_lower(const std::string& input) {
 
 /* Function to remove carriage returns from string
 
-std::string remove_cr(std::string str) {
-	str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
+string remove_cr string str) {
+	str.erase(remove(str.begin(), str.end(), '\r'), str.end());
 	return str;
 }*/
 
 // Copies the valid Swedish letters of a string into another string and returns it. Used for filtering input.
-std::string keep_swedish_letters(const std::string& input) {
-	const std::string swedish_letters = "abcdefghijklmnopqrstuvwxyz\xC3\xA5\xC3\xA4\xC3\xB6";
-	std::string result;
-	std::copy_if(input.begin(), input.end(), std::back_inserter(result),
-		[&swedish_letters](char c) { return swedish_letters.find(c) != std::string::npos; });
+string keep_swedish_letters(const string& input) {
+	const string swedish_letters = "abcdefghijklmnopqrstuvwxyz\xC3\xA5\xC3\xA4\xC3\xB6";
+	string result;
+	copy_if(input.begin(), input.end(), back_inserter(result),
+		[&swedish_letters](char c) { return swedish_letters.find(c) != string::npos; });
 	return result;
 }
 
 // Measures edit distance between 2 strings
-int levenshtein_distance(const std::string& s1, const std::string& s2) {
+int levenshtein_distance(const string& s1, const string& s2) {
 	int len_s1 = s1.size();
 	int len_s2 = s2.size();
 
 	// Step 1: Initialize the matrix
-	std::vector<std::vector<int>> dp(len_s1 + 1, std::vector<int>(len_s2 + 1));
+	vector<vector<int>> dp(len_s1 + 1, vector<int>(len_s2 + 1));
 
 	// Step 2: Initialize the first row and first column
 	for (int i = 0; i <= len_s1; ++i) {
@@ -82,7 +83,7 @@ int levenshtein_distance(const std::string& s1, const std::string& s2) {
 		for (int j = 1; j <= len_s2; ++j) {
 			int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
 
-			//dp[i][j] = std::min({ dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost });
+			//dp[i][j] = min({ dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost });
 			// Manually compute the minimum value
 			int deletion = dp[i - 1][j] + 1;      // Deletion
 			int insertion = dp[i][j - 1] + 1;     // Insertion
@@ -103,11 +104,11 @@ int levenshtein_distance(const std::string& s1, const std::string& s2) {
 }
 
 // Shuffling for random questions
-std::vector<int> shuffle(int end) {
-	std::vector<int> v(end);
-	std::random_device rd;
-	std::iota(v.begin(), v.end(), 1);  // Fill vector with values from 1 to end
-	std::ranges::shuffle(v, rd);       // Shuffle using C++20 ranges
+vector<int> shuffle(int end) {
+	vector<int> v(end);
+	random_device rd;
+	iota(v.begin(), v.end(), 1);  // Fill vector with values from 1 to end
+	ranges::shuffle(v, rd);       // Shuffle using C++20 ranges
 	for (int i = 0; i < end; i++) {
 		v[i] = v[i] - 1;  // Adjust values from 1-based to 0-based
 	}
@@ -115,23 +116,23 @@ std::vector<int> shuffle(int end) {
 }
 
 // Question and Input handling here.
-int question_loop(const std::vector<std::string>& elements, const std::vector<std::string>& signs, int i, int n) {
-	std::string query;
+int question_loop(const vector<string>& elements, const vector<string>& signs, int i, int n) {
+	string query;
 	int threshold = 23;
 	int pointsback = 0;
 
-	std::cout.flush();
-	std::cout << "\033[H\033[J";
-	std::cout << n << ". " << "Vad heter detta elementet? " << signs[i] << std::endl;
-	// std::getline(std::cin >> std::ws, query);
+	cout.flush();
+	cout << "\033[H\033[J";
+	cout << n << ". " << "Vad heter detta elementet? " << signs[i] << endl;
+	// getline(cin >> ws, query);
 
 	while (true) {
-		std::getline(std::cin, query); // Read a line of input
+		getline(cin, query); // Read a line of input
 
 		// Check if the input is empty
 		if (query.empty()) {
-			std::cout << "\033[H\033[J";
-			std::cout << n << ". " << "Vad heter detta elementet? " << signs[i] << std::endl;
+			cout << "\033[H\033[J";
+			cout << n << ". " << "Vad heter detta elementet? " << signs[i] << endl;
 			continue;  // Ignore empty input and reprompt
 		}
 
@@ -147,43 +148,43 @@ int question_loop(const std::vector<std::string>& elements, const std::vector<st
 	query = keep_swedish_letters(query);
 	int distance = levenshtein_distance(query, elements[i]);
 	if (distance >= 13) {
-		std::cout << "Tar du inte detta seri\xC3\xB6st?" << std::endl;
-		std::cin.get();
+		cout << "Tar du inte detta seri\xC3\xB6st?" << endl;
+		cin.get();
 		return -1;
 	}
 
 	switch (distance <= 2) {
 	case 1:
-		if (query == elements[i]) {  // Add this check
-			std::cout << "\u001b[32mYAYYY, du har r\xC3\xA4tt! Har far du 3 poang!\u001b[37m" << std::endl;
+		if (query == elements[i]) {
+			cout << "\u001b[32mYAYYY, du har r\xC3\xA4tt! Har far du 3 poang!\u001b[37m" << endl;
 			pointsback = 3;
 			break;
 		}
-		std::cout << "\u001b[33mOOHH, n\xC3\xA4stan... har... ta 1 gratis po\xC3\xA4ng!" << std::endl;
-		std::cout << "\u001b[32mR\xC3\xA4tt svar var: " << elements[i] << "\u001b[37m" << std::endl;
+		cout << "\u001b[33mOOHH, n\xC3\xA4stan... har... ta 1 gratis po\xC3\xA4ng!" << endl;
+		cout << "\u001b[32mR\xC3\xA4tt svar var: " << elements[i] << "\u001b[37m" << endl;
 		pointsback = 1;
 		break;
 	default:
-		std::cout << "\u001b[31mOH NO, tyvarr fel... testa igen.\u001b[37m" << std::endl;
-		std::cout << "R\xC3\xA4tt svar var: " << elements[i] << std::endl;
+		cout << "\u001b[31mOH NO, tyvarr fel... testa igen.\u001b[37m" << endl;
+		cout << "R\xC3\xA4tt svar var: " << elements[i] << endl;
 		break;
 	}
-	std::cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta..." << std::endl;
-	std::cin.clear();
-	std::cin.ignore(10000, '\n');
-	std::cout << "\033[H\033[J" << std::endl;
+	cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta..." << endl;
+	cin.clear();
+	cin.ignore(10000, '\n');
+	cout << "\033[H\033[J" << endl;
 
 	return pointsback;
 }
 
 // Main Quiz functionality, calls upon question_loop inside a loop.
-int question_game_symbols(std::vector<std::string> elements, std::vector<std::string> signs) {
-	std::vector<int> shufflist = shuffle(30);
+int question_game_symbols(vector<string> elements, vector<string> signs) {
+	vector<int> shufflist = shuffle(30);
 	int question;
 	int points = 0;
 	int point;
 
-	std::cout << std::endl;
+	cout << endl;
 
 	for (int i = 0; i < 30; i++) {
 		question = shufflist[i];
@@ -196,19 +197,19 @@ int question_game_symbols(std::vector<std::string> elements, std::vector<std::st
 		}
 	}
 	double percent = (static_cast<double>(points) / 90) * 100;
-	std::cout << "Dina po\xC3\xA4ng: ";
-	std::cout << std::fixed << std::setprecision(2) << percent << "%" << std::endl;
+	cout << "Dina po\xC3\xA4ng: ";
+	cout << fixed << setprecision(2) << percent << "%" << endl;
 
-	std::cin.get();
+	cin.get();
 	return 0;
 }
 
 int main() {
 	system("chcp 65001"); // To support Unicode characters
 	system("@echo off");
-	std::vector<std::string> filenames = { "elements.txt", "signs.txt" };
-	std::vector<std::string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
-	std::vector<std::string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
+	vector<string> filenames = { "elements.txt", "signs.txt" };
+	vector<string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
+	vector<string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
 
 	// Main Menu
 	int colors[] = { 7, 7, 7 };
@@ -223,9 +224,9 @@ int main() {
 			gotoxy(0, i + 1);
 			color(colors[i]);
 			switch (i) {
-			case 0: std::cout << "1. Quiz"; break;
-			case 1: std::cout << "2. Kolla Element och Symboler"; break;
-			case 2: std::cout << "3. Avsluta"; break;
+			case 0: cout << "1. Quiz"; break;
+			case 1: cout << "2. Kolla Element och Symboler"; break;
+			case 2: cout << "3. Avsluta"; break;
 			}
 		}
 
@@ -242,9 +243,9 @@ int main() {
 					break;
 				case 1:
 					for (int i = 0; i < 30; i++) {
-						std::cout << elements[i] << " : " << signs[i] << std::endl;
+						cout << elements[i] << " : " << signs[i] << endl;
 					}
-					std::cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta...";
+					cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta...";
 					_getch();
 					break;
 				case 2:
