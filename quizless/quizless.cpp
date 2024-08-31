@@ -214,9 +214,59 @@ public:
 	}
 };
 
-int main() {
+class menu {
+private:
+	// Main Menu
+	vector<int> colors;
+	int selected = 0;
+	int key;
+public:	
 	console_part cp; // noice, wait what
 	questions q;
+
+	int	main_menu(vector<int> colors, int selected, int key) const {
+		while (true) {
+			system("cls"); // Clear screen
+
+			for (int i = 0; i < 3; i++) {
+				colors[i] = (i == selected) ? 13 : 7;
+				cp.gotoxy(0, i + 1);
+				cp.color(colors[i]);
+				switch (i) {
+				case 0: cout << "1. Quiz"; break;
+				case 1: cout << "2. Kolla Element och Symboler"; break;
+				case 2: cout << "3. Avsluta"; break;
+				}
+			}
+
+			key = _getch();
+
+			if (key == 72 && selected > 0) selected--; // Up arrow
+			if (key == 80 && selected < 2) selected++; // Down arrow
+
+			if (key == 13) { // Enter key
+				system("cls");
+				switch (selected) {
+				case 0:
+					q.question_game_symbols(elements, signs);
+					break;
+				case 1:
+					for (int i = 0; i < 30; i++) {
+						cout << elements[i] << " : " << signs[i] << endl;
+					}
+					cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta...";
+					cin.get();
+					break;
+				case 2:
+					cp.color(7);
+					return 0;
+				}
+			}
+		}
+	}
+};
+
+int main() {
 
 	system("chcp 65001"); // To support Unicode characters
 	// system("@echo off"); // I can't remember why, my uncle just said so...
