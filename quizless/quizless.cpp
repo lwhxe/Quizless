@@ -8,6 +8,8 @@
 #include <windows.h>
 #include <ranges>
 #include <conio.h>
+#include <functional>
+#include <any>
 
 using namespace std;
 
@@ -220,9 +222,13 @@ private:
 	vector<int> colors;
 	int selected = 0;
 	int key;
-public:	
+
+	vector<string> prompts;
+	vector<function<any(const vector<any>&)>> functions;
+public:
 	console_part cp; // noice, wait what
-	questions q;
+	
+	menu(vector<int> colors, int selected, vector<string> prompts, vector<function<any(const vector<any>&)>> functions) : colors(colors), selected(selected), prompts(prompts), functions(functions) {}
 
 	int	main_menu(vector<int> colors, int selected, int key) const {
 		while (true) {
@@ -233,9 +239,9 @@ public:
 				cp.gotoxy(0, i + 1);
 				cp.color(colors[i]);
 				switch (i) {
-				case 0: cout << "1. Quiz"; break;
-				case 1: cout << "2. Kolla Element och Symboler"; break;
-				case 2: cout << "3. Avsluta"; break;
+					case 0: cout << prompts[i]; break;
+					case 1: cout << prompts[i]; break;
+					case 2: cout << prompts[i]; break;
 				}
 			}
 
@@ -245,33 +251,27 @@ public:
 			if (key == 80 && selected < 2) selected++; // Down arrow
 
 			if (key == 13) { // Enter key
-				system("cls");
-				switch (selected) {
-				case 0:
-					q.question_game_symbols(elements, signs);
-					break;
-				case 1:
-					for (int i = 0; i < 30; i++) {
-						cout << elements[i] << " : " << signs[i] << endl;
-					}
-					cout << "Tryck p\xC3\xA5 [ENTER] f\xC3\xB6r att forts\xC3\xA4tta...";
-					cin.get();
-					break;
-				case 2:
-					cp.color(7);
-					return 0;
-				}
+				
 			}
 		}
 	}
 };
 
-int main() {
+class filesys {
+private:
 
+public:
+
+};
+
+int main() {
+	console_part cp; // noice, wait what
+	questions q;
 	system("chcp 65001"); // To support Unicode characters
 	// system("@echo off"); // I can't remember why, my uncle just said so...
 	vector<string> elements = {"v\xC3\xA4te", "helium", "litium", "beryllium", "bor", "kol", "kv\xC3\xA4ve", "syre", "fluor", "neon", "natrium", "magnesium", "aluminium", "kisel", "fosfor", "svavel", "klor", "argon", "kalium", "kalcium", "skandium", "titan", "vanadin", "krom", "mangan", "j\xC3\xA4rn", "kobolt", "nickel", "koppar", "zink"};
 	vector<string> signs = { "H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn" };
+	vector<function<any(const vector<any>&)>> functions;
 
 	// Main Menu
 	int colors[] = { 7, 7, 7 };
