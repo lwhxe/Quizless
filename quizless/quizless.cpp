@@ -151,7 +151,6 @@ private:
 				cout << n << ". " << "Vad heter detta elementet? " << signs[i] << endl;
 				continue;  // Ignore empty input and reprompt
 			}
-
 			break;  // Exit the loop if non-empty input is provided
 		}
 
@@ -221,7 +220,6 @@ private:
 	// Main Menu
 	vector<int> colors;
 	int selected = 0;
-	int key;
 
 	vector<string> prompts;
 	vector<function<any(const vector<any>&)>> functions;
@@ -230,7 +228,7 @@ public:
 	
 	menu(vector<int> colors, int selected, vector<string> prompts, vector<function<any(const vector<any>&)>> functions) : colors(colors), selected(selected), prompts(prompts), functions(functions) {}
 
-	int	main_menu(vector<int> colors, int selected, int key) const {
+	int	main_menu(vector<int> colors, int selected) const {
 		while (true) {
 			system("cls"); // Clear screen
 
@@ -245,7 +243,7 @@ public:
 				}
 			}
 
-			key = _getch();
+			int key = _getch();
 
 			if (key == 72 && selected > 0) selected--; // Up arrow
 			if (key == 80 && selected < 2) selected++; // Down arrow
